@@ -7,6 +7,6 @@ export class UserController {
 
     @Get()
     getHello(): string {
-        return this.userService.getHello();
+        return this.userService.getallUser();
     }
 }
