@@ -9,6 +9,8 @@ import {
   Post,
   Query,
   Res,
+  UseGuards,
+  Request,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
@@ -19,6 +21,7 @@ import { Pagination } from 'src/helpers/pagination';
 import { UserResponseInterface } from './interfaces/user-response.interface';
 import { InsertUserDto, LoginUserDto, SearchUserDto } from './dto';
 import { Response } from 'express';
+import { LocalAuthGuard } from './guards/local-auth.guard';
 
 @Controller('user')
 export class UserController {
@@ -63,40 +66,6 @@ export class UserController {
     });
   }
 
-  @Post('login')
-  @UsePipes(new ValidationPipe({ transform: true }))
-  @HttpCode(200)
-  @ApiResponse({
-    status: 200,
-    type: BaseResponse,
-    description: 'User Has Been Created',
-  })
-  @ApiResponse({
-    status: 401,
-    type: BaseResponse,
-    description: 'unauthorized',
-  })
-  public async loginUser(
-    @Body() body: LoginUserDto,
-    @Res() res: Response,
-  ): Promise<any> {
-    const result = await this.userService.loginUsers(body);
-
-    if(result == null){
-      return res.status(HttpStatus.UNAUTHORIZED).json({
-        status: false,
-        message: 'unauthorized',
-        data : result,
-      });
-    }
-
-    return res.status(HttpStatus.OK).json({
-      status: true,
-      message: 'success',
-      data : result,
-    });
-  }
-
   @Get('/:id')
   @UsePipes(new ValidationPipe({ transform: true }))
   @HttpCode(200)
@@ -130,6 +99,27 @@ export class UserController {
       status: true,
       message: 'Success',
       data: result,
+    });
+  }
+
+  @Post('login')
+  @UseGuards(LocalAuthGuard)
+  @UsePipes(new ValidationPipe({ transform: true }))
+  @ApiResponse({
+    status: 200,
+    type: BaseResponse,
+    description: 'User Has Logged In Successfully',
+  })
+  @ApiResponse({
+    status: 401,
+    type: BaseResponse,
+    description: 'unauthorized',
+  })
+  public async login(@Request() req, @Res() res: Response) {
+    return res.status(HttpStatus.OK).json({
+      status: true,
+      message: 'success',
+      data: req.user,
     });
   }
 }

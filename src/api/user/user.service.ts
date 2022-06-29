@@ -34,14 +34,14 @@ export class UserService {
       .execute();
   }
 
-  public async loginUsers(request): Promise<any>{
+  public async loginUsers(payload): Promise<any>{
     const user = await this.repository
     .createQueryBuilder('user')
-    .where("email = :email", { email: request.email })
+    .where("email = :email", { email: payload.email })
     .getOne();
 
     if(user){
-      const isValid = await bcrypt.compare(request.password, user.password);
+      const isValid = await bcrypt.compare(payload.password, user.password);
       if(isValid){
         return user;
       }
@@ -63,5 +63,20 @@ export class UserService {
       .from(Users)
       .where("id = :id", { id: id })
       .execute();
+  }
+
+  public async validateUser(email : string, pass:string): Promise<any>{
+    const user = await this.repository
+    .createQueryBuilder('user')
+    .where("email = :email", { email: email })
+    .getOne();
+
+    if(user){
+      const isValid = await bcrypt.compare(pass, user.password);
+      if(isValid){
+        return user;
+      }
+    }
+    return null;
   }
 }
