@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Users } from 'src/entities/Users';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserService {
@@ -22,11 +23,45 @@ export class UserService {
   }
 
   public async insertUsers(payload): Promise<any> {
+    //Encrypt Password
+    payload.password = await bcrypt.hash(payload.password, 10);
+
     return await this.repository
       .createQueryBuilder('user')
       .insert()
       .into(Users)
       .values(payload)
+      .execute();
+  }
+
+  public async loginUsers(request): Promise<any>{
+    const user = await this.repository
+    .createQueryBuilder('user')
+    .where("email = :email", { email: request.email })
+    .getOne();
+
+    if(user){
+      const isValid = await bcrypt.compare(request.password, user.password);
+      if(isValid){
+        return user;
+      }
+    }
+    return null;
+  }
+
+  public async getUserById(id): Promise<any> {
+    return await this.repository
+      .createQueryBuilder('user')
+      .where("id = :id", { id: id })
+      .getOne();
+  }
+
+  public async deleteUser(id): Promise<any> {
+    return await this.repository
+      .createQueryBuilder('user')
+      .delete()
+      .from(Users)
+      .where("id = :id", { id: id })
       .execute();
   }
 }
