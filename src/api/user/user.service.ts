@@ -12,15 +12,16 @@ export class UserService {
     return 'Hehe World!';
   }
 
-  public async getAllUsers(): Promise<any> {
+  public async getAllUsers(payload): Promise<any> {
     const content = await this.repository
       .createQueryBuilder('user')
+      .where("user.name like :search", { search:`%${payload.search}%` })
       .getMany();
       
     return content;
   }
 
-  public async insertUsers(payload: any[]): Promise<any> {
+  public async insertUsers(payload): Promise<any> {
     return await this.repository
       .createQueryBuilder('user')
       .insert()
