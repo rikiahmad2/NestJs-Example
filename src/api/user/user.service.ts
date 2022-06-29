@@ -19,4 +19,13 @@ export class UserService {
       
     return content;
   }
+
+  public async insertUsers(payload: any[]): Promise<any> {
+    return await this.repository
+      .createQueryBuilder('user')
+      .insert()
+      .into(User)
+      .values(payload)
+      .execute();
+  }
 }
