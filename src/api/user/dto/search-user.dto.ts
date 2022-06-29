@@ -3,7 +3,7 @@ import { IsNumber } from 'class-validator';
 
 export class SearchUserDto {
   @ApiProperty()
-  public search: string;
+  public search = '';
 
   @IsNumber()
   public page = 0;

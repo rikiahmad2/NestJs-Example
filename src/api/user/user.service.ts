@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { User } from 'src/entities/User';
+import { Users } from 'src/entities/Users';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 @Injectable()
 export class UserService {
-  @InjectRepository(User)
-  private readonly repository: Repository<User>;
+  @InjectRepository(Users)
+  private readonly repository: Repository<Users>;
 
   getHello(): string {
     return 'Hehe World!';
@@ -15,7 +15,7 @@ export class UserService {
   public async getAllUsers(payload): Promise<any> {
     const content = await this.repository
       .createQueryBuilder('user')
-      .where("user.name like :search", { search:`%${payload.search}%` })
+      .where(`name ilike :search`, { search:`%${payload.search}%` })
       .getMany();
       
     return content;
@@ -25,7 +25,7 @@ export class UserService {
     return await this.repository
       .createQueryBuilder('user')
       .insert()
-      .into(User)
+      .into(Users)
       .values(payload)
       .execute();
   }
