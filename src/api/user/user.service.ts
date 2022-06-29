@@ -3,11 +3,14 @@ import { Users } from 'src/entities/Users';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class UserService {
   @InjectRepository(Users)
   private readonly repository: Repository<Users>;
+
+  constructor(private jwtService : JwtService){}
 
   getHello(): string {
     return 'Hehe World!';
@@ -78,5 +81,10 @@ export class UserService {
       }
     }
     return null;
+  }
+
+  public async generateToken(user: any) {
+    const payload = await { email: user.email, password: user.password };
+    return this.jwtService.sign(payload);
   }
 }

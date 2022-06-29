@@ -19,9 +19,10 @@ import { BaseResponse } from 'src/helpers/response';
 import { ApiResponse } from '@nestjs/swagger';
 import { Pagination } from 'src/helpers/pagination';
 import { UserResponseInterface } from './interfaces/user-response.interface';
-import { InsertUserDto, LoginUserDto, SearchUserDto } from './dto';
+import { InsertUserDto, SearchUserDto } from './dto';
 import { Response } from 'express';
-import { LocalAuthGuard } from './guards/local-auth.guard';
+import { LocalAuthGuard } from '../../guards/local-auth.guard';
+import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 
 @Controller('user')
 export class UserController {
@@ -66,6 +67,7 @@ export class UserController {
     });
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get('/:id')
   @UsePipes(new ValidationPipe({ transform: true }))
   @HttpCode(200)
@@ -116,9 +118,11 @@ export class UserController {
     description: 'unauthorized',
   })
   public async login(@Request() req, @Res() res: Response) {
+    const jwt_token = await this.userService.generateToken(req.user)
     return res.status(HttpStatus.OK).json({
       status: true,
       message: 'success',
+      token : jwt_token,
       data: req.user,
     });
   }
