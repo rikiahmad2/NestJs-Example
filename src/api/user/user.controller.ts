@@ -82,16 +82,18 @@ export class UserController {
   ): Promise<any> {
     const result = await this.userService.loginUsers(body);
 
-    if (result == null) {
+    if(result == null){
       return res.status(HttpStatus.UNAUTHORIZED).json({
         status: false,
         message: 'unauthorized',
+        data : result,
       });
     }
-    return new BaseResponse({
+
+    return res.status(HttpStatus.OK).json({
       status: true,
-      message: 'Success',
-      data: result,
+      message: 'success',
+      data : result,
     });
   }
 
