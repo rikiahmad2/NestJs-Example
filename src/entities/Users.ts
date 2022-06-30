@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Entity, PrimaryColumn, Column, BaseEntity, PrimaryGeneratedColumn, ManyToOne, OneToMany, JoinColumn } from "typeorm";
+import { Entity, PrimaryColumn, Column, BaseEntity, PrimaryGeneratedColumn, ManyToOne, OneToMany, JoinColumn, UpdateDateColumn, CreateDateColumn } from "typeorm";
 import { Organization } from "./Organization";
 
 @Entity()
@@ -34,19 +34,15 @@ export class Users extends BaseEntity {
     })
     role: string;
 
-    @Column({ 
-        type: "timestamp",
-        nullable: true,
-    })
-    created_at: string;
-
-    @Column({ 
-        type: "timestamp",
-        nullable: true,
-    })
-    updated_at: string;
-
-    @ManyToOne(() => Organization, (id_organization) => id_organization.id_organization)
+    @ManyToOne(() => Organization, (id_organization) => id_organization.id_organization, 
+        { onDelete: "CASCADE" }
+    )
     @JoinColumn({ name: 'id_organization' })
     id_organization: Organization;
+
+    @CreateDateColumn()
+    created_at: string;
+
+    @UpdateDateColumn()
+    updated_at: string;
 }

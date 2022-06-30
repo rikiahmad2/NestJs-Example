@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Entity, PrimaryColumn, Column, BaseEntity, PrimaryGeneratedColumn, OneToMany } from "typeorm";
+import { Entity, PrimaryColumn, Column, BaseEntity, PrimaryGeneratedColumn, OneToMany, CreateDateColumn, UpdateDateColumn } from "typeorm";
 import { Users } from "./Users";
 
 @Entity()
@@ -17,18 +17,12 @@ export class Organization extends BaseEntity {
     })
     name: string;
 
-    @Column({ 
-        type: "timestamp",
-        nullable: true,
-    })
-    created_at: string;
-
-    @Column({ 
-        type: "timestamp",
-        nullable: true,
-    })
-    updated_at: string;
-
     @OneToMany(() => Users, (city) => city.id_organization)
     users: Users[];
+
+    @CreateDateColumn()
+    created_at: string;
+
+    @UpdateDateColumn()
+    updated_at: string;
 }
