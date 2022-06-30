@@ -9,12 +9,22 @@ export class Organization extends BaseEntity {
     @Column()
     id_user: number;
 
-    @Column()
+    @Column({
+        type: "varchar",
+        length: 250,
+        nullable: true,
+    })
     name: string;
 
-    @Column()
+    @Column({ 
+        type: "timestamp",
+        nullable: true,
+    })
     created_at: string;
 
-    @Column()
+    @Column({ 
+        type: "timestamp",
+        nullable: true,
+    })
     updated_at: string;
 }
