@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Entity, PrimaryColumn, Column, BaseEntity, PrimaryGeneratedColumn } from "typeorm";
+import { Entity, PrimaryColumn, Column, BaseEntity, PrimaryGeneratedColumn, ManyToOne, OneToMany, JoinColumn } from "typeorm";
+import { Organization } from "./Organization";
 
 @Entity()
 export class Users extends BaseEntity {
@@ -44,4 +45,8 @@ export class Users extends BaseEntity {
         nullable: true,
     })
     updated_at: string;
+
+    @ManyToOne(() => Organization, (id_organization) => id_organization.id_organization)
+    @JoinColumn({ name: 'id_organization' })
+    id_organization: Organization;
 }
