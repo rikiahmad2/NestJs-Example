@@ -1,6 +1,8 @@
 import * as dotenv from 'dotenv';
 import {Users} from '../../../entities/Users';
 import {Organization} from '../../../entities/Organization';
+import { Article } from 'src/entities/Article';
+import { Comment } from 'src/entities/Comment';
 
 dotenv.config();
 
@@ -10,7 +12,7 @@ export const PgConfig = {
   database: process.env.DATABASE_NAME,
   username: process.env.DATABASE_USER,
   password: `${process.env.DATABASE_PASSWORD}`,
-  entities: [Organization, Users],
+  entities: [Organization, Users, Article, Comment],
   migrations: ['dist/database/migrations/*.{ts,js}'],
   subscribers: [],
   migrationsTableName: 'typeorm_migrations',
