@@ -1,42 +1,34 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Users } from 'src/entities/Users';
+import { Article } from 'src/entities/Article';
 import { Pagination } from 'src/helpers/pagination';
 import { Repository } from 'typeorm';
-import { UserResponseInterface } from '../user/interfaces/user-response.interface';
+import { ArticleResponseInterface } from './interface/article-response.interface';
 
 @Injectable()
 export class ArticleService {
-    @InjectRepository(Users)
-    private readonly repository: Repository<Users>;
+    @InjectRepository(Article)
+    private readonly repository: Repository<Article>;
     constructor() {}
 
     public async getAllArticle(
         payload,
-      ): Promise<Pagination<UserResponseInterface>> {
+      ): Promise<Pagination<ArticleResponseInterface>> {
         const totalData = await this.repository
-          .createQueryBuilder('user')
-          .leftJoinAndSelect(
-            'user.organization',
-            'organization',
-            'user.organization = organization.id_organization',
-          )
-          .where(`user.name ilike :search`, { search: `%${payload.search}%` })
+          .createQueryBuilder('article')
+          .leftJoinAndSelect("article.id_user", "user")
+          .where(`article.name ilike :search`, { search: `%${payload.search}%` })
           .getCount();
     
         const content = await this.repository
-          .createQueryBuilder('user')
-          .leftJoinAndSelect(
-            'user.organization',
-            'organization',
-            'user.organization = organization.id_organization',
-          )
-          .where(`user.name ilike :search`, { search: `%${payload.search}%` })
+          .createQueryBuilder('article')
+          .leftJoinAndSelect("article.id_user", "user")
+          .where(`article.name ilike :search`, { search: `%${payload.search}%` })
           .take(payload.size)
           .skip(payload.page)
           .getMany();
     
-        return new Pagination<UserResponseInterface>({
+        return new Pagination<ArticleResponseInterface>({
             content,
             totalData,
         });

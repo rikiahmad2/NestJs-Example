@@ -3,5 +3,4 @@ export interface ArticleResponseInterface {
     name: string;
     cover: string;
     content: string;
-    id_user: number;
 }

@@ -3,9 +3,9 @@ import { ApiResponse } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 import { Pagination } from 'src/helpers/pagination';
 import { BaseResponse } from 'src/helpers/response';
-import { UserResponseInterface } from '../user/interfaces/user-response.interface';
 import { ArticleService } from './article.service';
 import { SearchArticleDto } from './dto/search-article.dto';
+import { ArticleResponseInterface } from './interface/article-response.interface';
 
 @Controller('article')
 export class ArticleController {
@@ -23,7 +23,7 @@ export class ArticleController {
     public async getAllUsers(
       @Query() queryparam: SearchArticleDto,
     ): Promise<BaseResponse> {
-      const result: Pagination<UserResponseInterface> =
+      const result: Pagination<ArticleResponseInterface> =
         await this.articleService.getAllArticle(queryparam);
   
       return new BaseResponse({
