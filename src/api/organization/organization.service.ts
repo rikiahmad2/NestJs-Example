@@ -13,7 +13,8 @@ export class OrganizationService {
   public async getAllOrganizations(payload): Promise<any> {
     const content = await this.repository
       .createQueryBuilder('organization')
-      .where(`name ilike :search`, { search: `%${payload.search}%` })
+      .innerJoinAndSelect("organization.users", "user")
+      .where(`organization.name ilike :search`, { search: `%${payload.search}%` })
       .getMany();
 
     return content;

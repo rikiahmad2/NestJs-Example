@@ -14,7 +14,7 @@ export class Organization extends BaseEntity {
     })
     name: string;
 
-    @OneToMany(() => Users, (city) => city.id_organization)
+    @OneToMany(type => Users, user => user.organization)
     users: Users[];
 
     @CreateDateColumn()

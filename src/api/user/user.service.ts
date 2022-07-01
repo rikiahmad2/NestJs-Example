@@ -19,7 +19,8 @@ export class UserService {
   public async getAllUsers(payload): Promise<any> {
     const content = await this.repository
       .createQueryBuilder('user')
-      .where(`name ilike :search`, { search:`%${payload.search}%` })
+      .leftJoinAndSelect("user.organization", "organization", "user.organization = organization.id_organization")
+      .where(`user.name ilike :search`, { search:`%${payload.search}%` })
       .getMany();
       
     return content;

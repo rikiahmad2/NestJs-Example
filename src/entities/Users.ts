@@ -34,11 +34,11 @@ export class Users extends BaseEntity {
     })
     role: string;
 
-    @ManyToOne(() => Organization, (id_organization) => id_organization.id_organization, 
+    @ManyToOne(() => Organization, (organization) => organization.users, 
         { onDelete: "CASCADE" }
     )
-    @JoinColumn({ name: 'id_organization' })
-    id_organization: Organization;
+    @JoinColumn({ name: 'organization' })
+    organization: Organization;
 
     @CreateDateColumn()
     created_at: string;
