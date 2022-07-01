@@ -14,14 +14,14 @@ export class SearchUserDto {
     required: false,
   })
   @IsNumber()
-  public page? : number;
+  public page : number;
 
   @ApiProperty({
     example: 5,
     required: false,
   })
   @IsNumber()
-  public size? : number;
+  public size : number;
 
   public constructor() {
     this.search = '';
