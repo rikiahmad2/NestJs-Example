@@ -29,6 +29,7 @@ export class UserController {
   constructor(private userService: UserService) {}
 
   @Get()
+  @UseGuards(JwtAuthGuard)
   @UsePipes(new ValidationPipe({ transform: true }))
   @HttpCode(200)
   @ApiResponse({
@@ -50,6 +51,7 @@ export class UserController {
   }
 
   @Post()
+  @UseGuards(JwtAuthGuard)
   @UsePipes(new ValidationPipe({ transform: true }))
   @HttpCode(200)
   @ApiResponse({
@@ -67,8 +69,9 @@ export class UserController {
     });
   }
 
-  @UseGuards(JwtAuthGuard)
+  
   @Get('/:id')
+  @UseGuards(JwtAuthGuard)
   @UsePipes(new ValidationPipe({ transform: true }))
   @HttpCode(200)
   @ApiResponse({
@@ -87,6 +90,7 @@ export class UserController {
   }
 
   @Delete('/:id')
+  @UseGuards(JwtAuthGuard)
   @UsePipes(new ValidationPipe({ transform: true }))
   @HttpCode(200)
   @ApiResponse({

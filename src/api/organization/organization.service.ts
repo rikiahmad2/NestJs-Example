@@ -13,10 +13,19 @@ export class OrganizationService {
   public async getAllOrganizations(payload): Promise<any> {
     const content = await this.repository
       .createQueryBuilder('organization')
-      .innerJoinAndSelect("organization.users", "user")
+      .leftJoinAndSelect("organization.users", "user")
       .where(`organization.name ilike :search`, { search: `%${payload.search}%` })
       .getMany();
 
     return content;
+  }
+
+  public async insertOrganization(payload): Promise<any> {
+    return await this.repository
+      .createQueryBuilder('user')
+      .insert()
+      .into(Organization)
+      .values(payload)
+      .execute();
   }
 }
