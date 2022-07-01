@@ -7,9 +7,6 @@ export class Organization extends BaseEntity {
     @PrimaryGeneratedColumn()
     id_organization: number;
 
-    @Column()
-    id_user: number;
-
     @Column({
         type: "varchar",
         length: 250,
