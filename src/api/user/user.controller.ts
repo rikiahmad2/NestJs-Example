@@ -23,10 +23,11 @@ import { InsertUserDto, SearchUserDto } from './dto';
 import { Response } from 'express';
 import { LocalAuthGuard } from '../../guards/local-auth.guard';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
+import { MailService } from '../mail/mail.service';
 
 @Controller('user')
 export class UserController {
-  constructor(private userService: UserService) {}
+  constructor(private userService: UserService, private mailService: MailService) {}
 
   @Get()
   @UseGuards(JwtAuthGuard)
@@ -128,6 +129,27 @@ export class UserController {
       message: 'success',
       token : jwt_token,
       data: req.user,
+    });
+  }
+  
+  @Get('/sendemail/:id')
+  @UseGuards(JwtAuthGuard)
+  @UsePipes(new ValidationPipe({ transform: true }))
+  @HttpCode(200)
+  @ApiResponse({
+    status: 200,
+    type: BaseResponse,
+    description: 'Get Detail User',
+  })
+  public async sendEmail(@Param('id') id): Promise<any> {
+    const result = await this.userService.getUserById(id);
+
+    //SendEmail
+    await this.mailService.sendUserConfirmation(result, "asdsad%$&*@@*#");
+    return new BaseResponse({
+      status: true,
+      message: 'Success',
+      data: result,
     });
   }
 }

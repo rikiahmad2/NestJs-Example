@@ -8,6 +8,7 @@ import { UserService } from './user.service';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from 'src/guards/jwt.strategy';
 import { jwtConstants } from 'src/guards/constants';
+import { MailModule } from '../mail/mail.module';
 
 @Module({
     imports: [
@@ -17,6 +18,7 @@ import { jwtConstants } from 'src/guards/constants';
             secret: jwtConstants.secret,
             signOptions: { expiresIn: jwtConstants.expireTime },
         }),
+        MailModule,
     ],
     controllers: [UserController],
     providers: [UserService, LocalStrategy, JwtStrategy]
