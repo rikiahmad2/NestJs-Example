@@ -4,26 +4,49 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
+import { Pagination } from 'src/helpers/pagination';
+import { UserResponseInterface } from './interfaces/user-response.interface';
 
 @Injectable()
 export class UserService {
   @InjectRepository(Users)
   private readonly repository: Repository<Users>;
 
-  constructor(private jwtService : JwtService){}
+  constructor(private jwtService: JwtService) {}
 
   getHello(): string {
     return 'Hehe World!';
   }
 
-  public async getAllUsers(payload): Promise<any> {
+  public async getAllUsers(
+    payload,
+  ): Promise<Pagination<UserResponseInterface>> {
+    const totalData = await this.repository
+      .createQueryBuilder('user')
+      .leftJoinAndSelect(
+        'user.organization',
+        'organization',
+        'user.organization = organization.id_organization',
+      )
+      .where(`user.name ilike :search`, { search: `%${payload.search}%` })
+      .getCount();
+
     const content = await this.repository
       .createQueryBuilder('user')
-      .leftJoinAndSelect("user.organization", "organization", "user.organization = organization.id_organization")
-      .where(`user.name ilike :search`, { search:`%${payload.search}%` })
+      .leftJoinAndSelect(
+        'user.organization',
+        'organization',
+        'user.organization = organization.id_organization',
+      )
+      .where(`user.name ilike :search`, { search: `%${payload.search}%` })
+      .take(payload.size)
+      .skip(payload.page)
       .getMany();
-      
-    return content;
+
+    return new Pagination<UserResponseInterface>({
+      content,
+      totalData,
+    });
   }
 
   public async insertUsers(payload): Promise<any> {
@@ -38,15 +61,15 @@ export class UserService {
       .execute();
   }
 
-  public async loginUsers(payload): Promise<any>{
+  public async loginUsers(payload): Promise<any> {
     const user = await this.repository
-    .createQueryBuilder('user')
-    .where("email = :email", { email: payload.email })
-    .getOne();
+      .createQueryBuilder('user')
+      .where('email = :email', { email: payload.email })
+      .getOne();
 
-    if(user){
+    if (user) {
       const isValid = await bcrypt.compare(payload.password, user.password);
-      if(isValid){
+      if (isValid) {
         return user;
       }
     }
@@ -56,7 +79,7 @@ export class UserService {
   public async getUserById(id): Promise<any> {
     return await this.repository
       .createQueryBuilder('user')
-      .where("id = :id", { id: id })
+      .where('id = :id', { id: id })
       .getOne();
   }
 
@@ -65,19 +88,19 @@ export class UserService {
       .createQueryBuilder('user')
       .delete()
       .from(Users)
-      .where("id = :id", { id: id })
+      .where('id = :id', { id: id })
       .execute();
   }
 
-  public async validateUser(email : string, pass:string): Promise<any>{
+  public async validateUser(email: string, pass: string): Promise<any> {
     const user = await this.repository
-    .createQueryBuilder('user')
-    .where("email = :email", { email: email })
-    .getOne();
+      .createQueryBuilder('user')
+      .where('email = :email', { email: email })
+      .getOne();
 
-    if(user){
+    if (user) {
       const isValid = await bcrypt.compare(pass, user.password);
-      if(isValid){
+      if (isValid) {
         return user;
       }
     }
