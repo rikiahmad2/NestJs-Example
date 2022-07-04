@@ -12,7 +12,6 @@ export class InsertArticleMstDto {
   @ApiProperty({
     example: 'sample.jpg',
   })
-  @IsString()
   public cover: string;
 
   @ApiProperty({

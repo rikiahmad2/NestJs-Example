@@ -48,6 +48,7 @@ export class ArticleController {
   }
 
   @Post()
+  @UseInterceptors(FileInterceptor('cover'))
   @UseGuards(JwtAuthGuard)
   @UsePipes(new ValidationPipe({ transform: true }))
   @HttpCode(200)
@@ -56,7 +57,11 @@ export class ArticleController {
     type: BaseResponse,
     description: 'Article Has Been Created',
   })
-  public async createArticle(@Body() body: InsertArticleMstDto): Promise<any> {
+  public async createArticle(
+    @Body() body: InsertArticleMstDto,
+    @UploadedFile() cover: Express.Multer.File,
+  ): Promise<any> {
+    body.cover = cover.filename;
     const result = await this.articleService.insertArticleMst(body);
 
     return new BaseResponse({
@@ -85,27 +90,6 @@ export class ArticleController {
       status: true,
       message: 'Success',
       data: result,
-    });
-  }
-
-  @Post('file')
-  @UseInterceptors(FileInterceptor('file'))
-  @UseGuards(JwtAuthGuard)
-  @UsePipes(new ValidationPipe({ transform: true }))
-  @HttpCode(200)
-  @ApiResponse({
-    status: 200,
-    type: BaseResponse,
-    description: 'Article cover has been uploaded',
-  })
-  public async fileUploaded(
-    @UploadedFile() file: Express.Multer.File,
-  ): Promise<any> {
-    
-    return new BaseResponse({
-      status: true,
-      message: 'Success',
-      data: file,
     });
   }
 }
