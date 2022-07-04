@@ -13,7 +13,6 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiResponse } from '@nestjs/swagger';
-import { diskStorage } from 'multer';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 import { Pagination } from 'src/helpers/pagination';
 import { BaseResponse } from 'src/helpers/response';
@@ -90,16 +89,7 @@ export class ArticleController {
   }
 
   @Post('file')
-  @UseInterceptors(
-    FileInterceptor('file', {
-      storage: diskStorage({
-          destination: './upload',
-          filename: function ( req, file, cb ) {
-            cb( null, Date.now()+'-'+file.originalname);
-          }
-      }),
-  }),
-  )
+  @UseInterceptors(FileInterceptor('file'))
   @UseGuards(JwtAuthGuard)
   @UsePipes(new ValidationPipe({ transform: true }))
   @HttpCode(200)
