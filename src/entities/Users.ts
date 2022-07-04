@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Entity, PrimaryColumn, Column, BaseEntity, PrimaryGeneratedColumn, ManyToOne, OneToMany, JoinColumn, UpdateDateColumn, CreateDateColumn } from "typeorm";
+import { Article } from "./Article";
 import { Organization } from "./Organization";
 
 @Entity()
@@ -39,6 +40,9 @@ export class Users extends BaseEntity {
     )
     @JoinColumn({ name: 'organization' })
     organization: Organization;
+
+    @OneToMany(type => Article, article => article.user)
+    articles: Article[];
 
     @CreateDateColumn()
     created_at: string;
