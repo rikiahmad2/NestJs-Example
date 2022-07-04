@@ -22,7 +22,7 @@ import { ArticleResponseInterface } from './interface/article-response.interface
 export class ArticleController {
   constructor(private articleService: ArticleService) {}
 
-  @Get()
+  @Get('author')
   @UseGuards(JwtAuthGuard)
   @UsePipes(new ValidationPipe({ transform: true }))
   @HttpCode(200)
@@ -31,7 +31,7 @@ export class ArticleController {
     type: BaseResponse,
     description: 'Get All Users List',
   })
-  public async getAllUsers(
+  public async getAllArticle(
     @Query() queryparam: SearchArticleDto,
   ): Promise<BaseResponse> {
     const result: Pagination<ArticleResponseInterface> =
@@ -55,6 +55,28 @@ export class ArticleController {
   })
   public async createArticle(@Body() body: InsertArticleMstDto): Promise<any> {
     const result = await this.articleService.insertArticleMst(body);
+
+    return new BaseResponse({
+      status: true,
+      message: 'Success',
+      data: result,
+    });
+  }
+
+  @Get('many')
+  @UseGuards(JwtAuthGuard)
+  @UsePipes(new ValidationPipe({ transform: true }))
+  @HttpCode(200)
+  @ApiResponse({
+    status: 200,
+    type: BaseResponse,
+    description: 'Get All Users List',
+  })
+  public async getAllManytoManyArticle(
+    @Query() queryparam: SearchArticleDto,
+  ): Promise<BaseResponse> {
+    const result: Pagination<ArticleResponseInterface> =
+      await this.articleService.getAllArticleMany(queryparam);
 
     return new BaseResponse({
       status: true,

@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Entity, PrimaryColumn, Column, BaseEntity, PrimaryGeneratedColumn, OneToMany, CreateDateColumn, UpdateDateColumn, OneToOne, JoinColumn, ManyToOne } from "typeorm";
+import { Entity, PrimaryColumn, Column, BaseEntity, PrimaryGeneratedColumn, OneToMany, CreateDateColumn, UpdateDateColumn, OneToOne, JoinColumn, ManyToOne, ManyToMany, JoinTable } from "typeorm";
 import { Comment } from "./Comment";
+import { Msttag } from "./Msttag";
 import { Users } from "./Users";
 
 @Entity()
@@ -37,6 +38,12 @@ export class Article extends BaseEntity {
     )
     @JoinColumn({ name: 'user' })
     user: Users;
+
+    @ManyToMany(() => Msttag, {
+        cascade: true,
+      })
+    @JoinTable({name: 'article_msttag'})
+    msttags: Article[]
 
     @CreateDateColumn()
     created_at: string;

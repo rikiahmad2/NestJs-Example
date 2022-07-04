@@ -19,13 +19,36 @@ export class ArticleService {
   ): Promise<Pagination<ArticleResponseInterface>> {
     const totalData = await this.repository
       .createQueryBuilder('article')
-      .leftJoinAndSelect('article.id_user', 'user')
+      .leftJoinAndSelect('article.user', 'user')
       .where(`article.name ilike :search`, { search: `%${payload.search}%` })
       .getCount();
 
     const content = await this.repository
       .createQueryBuilder('article')
-      .leftJoinAndSelect('article.id_user', 'user')
+      .leftJoinAndSelect('article.user', 'user')
+      .where(`article.name ilike :search`, { search: `%${payload.search}%` })
+      .take(payload.size)
+      .skip(payload.page)
+      .getMany();
+
+    return new Pagination<ArticleResponseInterface>({
+      content,
+      totalData,
+    });
+  }
+
+  public async getAllArticleMany(
+    payload,
+  ): Promise<Pagination<ArticleResponseInterface>> {
+    const totalData = await this.repository
+      .createQueryBuilder('article')
+      .leftJoinAndSelect('article.msttags', 'msttag')
+      .where(`article.name ilike :search`, { search: `%${payload.search}%` })
+      .getCount();
+
+    const content = await this.repository
+      .createQueryBuilder('article')
+      .leftJoinAndSelect('article.msttags', 'msttag')
       .where(`article.name ilike :search`, { search: `%${payload.search}%` })
       .take(payload.size)
       .skip(payload.page)

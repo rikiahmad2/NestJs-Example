@@ -19,10 +19,4 @@ export class Msttag extends BaseEntity {
 
     @UpdateDateColumn()
     updated_at: string;
-
-    @ManyToMany(() => Article, {
-        cascade: true,
-      })
-    @JoinTable({name: 'article_msttag'})
-    articles: Article[]
 }
