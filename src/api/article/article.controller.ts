@@ -5,11 +5,15 @@ import {
   HttpCode,
   Post,
   Query,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiResponse } from '@nestjs/swagger';
+import { diskStorage } from 'multer';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 import { Pagination } from 'src/helpers/pagination';
 import { BaseResponse } from 'src/helpers/response';
@@ -82,6 +86,36 @@ export class ArticleController {
       status: true,
       message: 'Success',
       data: result,
+    });
+  }
+
+  @Post('file')
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+          destination: './upload',
+          filename: function ( req, file, cb ) {
+            cb( null, Date.now()+'-'+file.originalname);
+          }
+      }),
+  }),
+  )
+  @UseGuards(JwtAuthGuard)
+  @UsePipes(new ValidationPipe({ transform: true }))
+  @HttpCode(200)
+  @ApiResponse({
+    status: 200,
+    type: BaseResponse,
+    description: 'Article cover has been uploaded',
+  })
+  public async fileUploaded(
+    @UploadedFile() file: Express.Multer.File,
+  ): Promise<any> {
+    
+    return new BaseResponse({
+      status: true,
+      message: 'Success',
+      data: file,
     });
   }
 }
