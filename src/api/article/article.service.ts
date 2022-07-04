@@ -19,12 +19,14 @@ export class ArticleService {
   ): Promise<Pagination<ArticleResponseInterface>> {
     const totalData = await this.repository
       .createQueryBuilder('article')
+      .leftJoinAndSelect('article.user', 'user')
       .leftJoinAndSelect('article.comments', 'comment')
       .where(`article.name ilike :search`, { search: `%${payload.search}%` })
       .getCount();
 
     const content = await this.repository
       .createQueryBuilder('article')
+      .leftJoinAndSelect('article.user', 'user')
       .leftJoinAndSelect('article.comments', 'comment')
       .where(`article.name ilike :search`, { search: `%${payload.search}%` })
       .take(payload.size)
