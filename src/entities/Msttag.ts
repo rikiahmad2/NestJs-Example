@@ -23,6 +23,6 @@ export class Msttag extends BaseEntity {
     @ManyToMany(() => Article, {
         cascade: true,
       })
-    @JoinTable()
+    @JoinTable({name: 'article_msttag'})
     articles: Article[]
 }

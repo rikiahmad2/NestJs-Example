@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Article } from 'src/entities/Article';
+import { ArticleMsttag } from 'src/entities/ArticleMsttag';
 import { Msttag } from 'src/entities/Msttag';
 import { Pagination } from 'src/helpers/pagination';
 import { Repository } from 'typeorm';
@@ -11,7 +12,6 @@ export class ArticleService {
   @InjectRepository(Article)
   @InjectRepository(Msttag)
   private readonly repository: Repository<Article>;
-  private readonly repository_mst: Repository<Msttag>;
   constructor() {}
 
   public async getAllArticle(
@@ -45,11 +45,36 @@ export class ArticleService {
       user: payload.id_user,
     };
 
-    return await this.repository
+    const mstInsert = {
+      name: payload.name_mst,
+    };
+
+    const inputmst = await this.repository
+      .createQueryBuilder('msttag')
+      .insert()
+      .into(Msttag)
+      .values(mstInsert)
+      .execute();
+
+    const test = await this.repository
       .createQueryBuilder('article')
       .insert()
       .into(Article)
       .values(articleInsert)
       .execute();
+
+    const arcitleMstInsert = {
+      msttagIdMst: inputmst.identifiers[0].id_mst,
+      articleIdArticle: test.identifiers[0].id_article,
+    };
+
+    await this.repository
+      .createQueryBuilder('article_msttag')
+      .insert()
+      .into(ArticleMsttag)
+      .values(arcitleMstInsert)
+      .execute();
+
+    return test;
   }
 }
