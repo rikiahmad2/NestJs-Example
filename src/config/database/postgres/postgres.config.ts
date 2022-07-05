@@ -15,7 +15,10 @@ export const PgConfig = {
   username: process.env.DATABASE_USER,
   password: `${process.env.DATABASE_PASSWORD}`,
   entities: [Organization, Users, Article, Comment, Msttag, ArticleMsttag],
-  migrations: ['dist/database/migrations/*.{ts,js}'],
   subscribers: [],
+  migrations: ['src/migrations/*.{ts,js}'],
   migrationsTableName: 'typeorm_migrations',
+  cli: {
+    migrationsDir: "src/migrations"
+  }
 };

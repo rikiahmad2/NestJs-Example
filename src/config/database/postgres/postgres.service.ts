@@ -11,6 +11,6 @@ export class PostgresService implements TypeOrmOptionsFactory {
   public createTypeOrmOptions(): TypeOrmModuleOptions {
     const config: TypeOrmModuleOptions = { ...PgConfig, type: 'postgres' };
 
-    return { ...config, logger: 'file', synchronize: true };
+    return { ...config, logger: 'file', synchronize: false };
   }
 }
