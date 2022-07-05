@@ -9,7 +9,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
-    TypeOrmModule.forRootAsync({ useClass: PostgresService }),
+    TypeOrmModule.forRootAsync({useClass: PostgresService}),
     ApiModule,
   ],
   controllers: [AppController],
