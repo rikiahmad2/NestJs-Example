@@ -9,7 +9,7 @@ import {
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
-import { ApiResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 import { Pagination } from 'src/helpers/pagination';
 import { BaseResponse } from 'src/helpers/response';
@@ -19,6 +19,7 @@ import { OrganizationResponseInterface } from './interface/organization.interfac
 import { OrganizationService } from './organization.service';
 
 @Controller('organization')
+@ApiTags('Organization')
 export class OrganizationController {
   constructor(private organizationService: OrganizationService) {}
 
@@ -31,6 +32,8 @@ export class OrganizationController {
     type: BaseResponse,
     description: 'Get Alll Users List',
   })
+  @ApiOperation({summary: 'Get all organization'})
+  @ApiBearerAuth()
   public async getAllOrganizations(
     @Query() queryparam: SearchOrganizationDto,
   ): Promise<BaseResponse> {
@@ -53,6 +56,8 @@ export class OrganizationController {
     type: BaseResponse,
     description: 'Organization Has Been Created',
   })
+  @ApiOperation({summary: 'create new organization'})
+  @ApiBearerAuth()
   public async createUser(@Body() body: InsertOrganizationDto): Promise<any> {
     const result = await this.organizationService.insertOrganization(body);
 

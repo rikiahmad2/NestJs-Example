@@ -12,7 +12,7 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 import { Pagination } from 'src/helpers/pagination';
 import { BaseResponse } from 'src/helpers/response';
@@ -22,6 +22,7 @@ import { SearchArticleDto } from './dto/search-article.dto';
 import { ArticleResponseInterface } from './interface/article-response.interface';
 
 @Controller('article')
+@ApiTags('Article')
 export class ArticleController {
   constructor(private articleService: ArticleService) {}
 
@@ -32,8 +33,10 @@ export class ArticleController {
   @ApiResponse({
     status: 200,
     type: BaseResponse,
-    description: 'Get All Users List',
+    description: 'Get All Article List',
   })
+  @ApiOperation({summary: 'Get all article author & comments'})
+  @ApiBearerAuth()
   public async getAllArticle(
     @Query() queryparam: SearchArticleDto,
   ): Promise<BaseResponse> {
@@ -57,6 +60,8 @@ export class ArticleController {
     type: BaseResponse,
     description: 'Article Has Been Created',
   })
+  @ApiOperation({summary: 'Create new article'})
+  @ApiBearerAuth()
   public async createArticle(
     @Body() body: InsertArticleMstDto,
     @UploadedFile() cover: Express.Multer.File,
@@ -78,8 +83,10 @@ export class ArticleController {
   @ApiResponse({
     status: 200,
     type: BaseResponse,
-    description: 'Get All Users List',
+    description: 'Get All Article List',
   })
+  @ApiOperation({summary: 'Get all article with all tags'})
+  @ApiBearerAuth()
   public async getAllManytoManyArticle(
     @Query() queryparam: SearchArticleDto,
   ): Promise<BaseResponse> {
