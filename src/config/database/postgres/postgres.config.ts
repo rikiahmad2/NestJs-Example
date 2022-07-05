@@ -10,7 +10,7 @@ export const PgConfig = {
   password: `${process.env.DATABASE_PASSWORD}`,
   entities: ['dist/**/*.entity.{ts,js}'],
   subscribers: [],
-  migrations: ['dist/migrations/*.{ts,js}'],
+  migrations: ['dist/src/migrations/*.{ts,js}'],
   migrationsTableName: 'typeorm_migrations',
   cli: {
     migrationsDir: "src/migrations"
